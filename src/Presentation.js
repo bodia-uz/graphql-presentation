@@ -1,7 +1,6 @@
-import React from 'react';
+import React, {Fragment} from 'react';
 // Import Spectacle Core tags
 import {
-  Spectacle,
   Deck,
   Slide,
   Heading,
@@ -17,12 +16,13 @@ import {
   Appear
 } from "spectacle";
 
+import './prism-graphql';
+
 // Import theme
 import createTheme from "spectacle/lib/themes/default";
 
 // Require CSS
 import "normalize.css";
-import "spectacle/lib/themes/default/index.css";
 import "./Presentation.css";
 
 const theme = createTheme({
@@ -37,10 +37,12 @@ const theme = createTheme({
 
 const GRAPH_COOL_URL = 'https://api.graph.cool/simple/v1/ciwfizwjy07jv01719xn8dhru?query=query%20jsMeetupQuery%20%7B%0A%20%20Event(id%3A%20%22ciwfk26dn25on0152p0co0ucw%22)%20%7B%0A%20%20%20%20name%0A%20%20%20%20sessions%20%7B%0A%20%20%20%20%20%20startAt%0A%20%20%20%20%20%20title%0A%20%20%20%20%20%20speaker%20%7B%0A%20%20%20%20%20%20%20%20name%0A%20%20%20%20%20%20%7D%0A%20%20%20%20%7D%0A%20%20%7D%0A%7D&variables=';
 
+CodePane.defaultProps.theme = 'external';
+
 function Presentation() {
   return (
-    <Spectacle theme={theme}>
-      <Deck transition={["slide"]} transitionDuration={500} progress='bar'>
+    <Fragment>
+      <Deck theme={theme} transition={["slide"]} transitionDuration={500} progress='bar'>
         {/*main*/}
         <Slide bgImage="/images/graph-wash.png"  transition={["spin"]}>
           <div style={{marginBottom: 100}}>
@@ -750,7 +752,7 @@ Non-null List of Non-null Types  => [<type>!]!  e.g [String!]!
           </Appear>
         </Slide>
       </Deck>
-    </Spectacle>
+    </Fragment>
   );
 }
 
