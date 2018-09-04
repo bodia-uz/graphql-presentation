@@ -35,7 +35,8 @@ const theme = createTheme({
   secondary: "Roboto Mono"
 });
 
-const GRAPH_COOL_URL = 'https://api.graph.cool/simple/v1/ciwfizwjy07jv01719xn8dhru?query=query%20jsMeetupQuery%20%7B%0A%20%20Event(id%3A%20%22ciwfk26dn25on0152p0co0ucw%22)%20%7B%0A%20%20%20%20name%0A%20%20%20%20sessions%20%7B%0A%20%20%20%20%20%20startAt%0A%20%20%20%20%20%20title%0A%20%20%20%20%20%20speaker%20%7B%0A%20%20%20%20%20%20%20%20name%0A%20%20%20%20%20%20%7D%0A%20%20%20%20%7D%0A%20%20%7D%0A%7D&variables=';
+// const GRAPH_COOL_URL = 'https://api.graph.cool/simple/v1/ciwfizwjy07jv01719xn8dhru?query=query%20jsMeetupQuery%20%7B%0A%20%20Event(id%3A%20%22ciwfk26dn25on0152p0co0ucw%22)%20%7B%0A%20%20%20%20name%0A%20%20%20%20sessions%20%7B%0A%20%20%20%20%20%20startAt%0A%20%20%20%20%20%20title%0A%20%20%20%20%20%20speaker%20%7B%0A%20%20%20%20%20%20%20%20name%0A%20%20%20%20%20%20%7D%0A%20%20%20%20%7D%0A%20%20%7D%0A%7D&variables=';
+const FEED_GRAPHQL_URL = 'https://podcasts.wix.com/feed/graphql';
 
 CodePane.defaultProps.theme = 'external';
 
@@ -56,12 +57,6 @@ function Presentation() {
                 GraphQL
               </Heading>
             </Link>
-            <Image
-              src="/images/betlab-logo_wh_cut.png"
-              height={20}
-              style={{margin:0}}
-            />{' '}
-            <span style={{fontSize: 21}}>JS Meetup</span>
           </div>
           <Layout>
             <Fill>
@@ -75,13 +70,12 @@ function Presentation() {
               <CodePane
                 className='prism'
                 lang='graphql'
-                source={`type Session {
+                source={`type Episode {
   id: ID
   createdAt: Date
   updatedAt: Date
   startAt: Date
   title: String
-  description: String
   speaker: Speaker
 }`
                 }
@@ -99,9 +93,8 @@ function Presentation() {
                 className='prism'
                 lang='graphql'
                 source={`{
-  session(title: "GraphQL") {
+  episode(title: "GraphQL") {
     title
-    description
     speaker {
       name
     }
@@ -122,9 +115,8 @@ function Presentation() {
                 className='prism'
                 lang='json'
                 source={`{
-  "session": {
+  "episode": {
     "title": "GraphQL"
-    "description": "A new actor in the API world"
     "speaker": {
       "name": "Bohdan Lyzanets"
     }
@@ -154,16 +146,18 @@ function Presentation() {
             </Fill>
             <Fill style={{textAlign: 'left'}}>
               <Code style={{color: 'white', fontSize: 25}}>
-                GET /api/events/7
+                GET /api/podcasts/7
               </Code>
               <CodePane
                 className='prism'
                 lang='json'
                 source={`[
   {
-    "id": 18,
-    "name": "BETLAB JS MEETUP",
-    "date": "10 DEC"
+    "id": 7,
+    "image": "http://example.com/podcast.jpg",
+    "title": "Space Explorer Podcast",
+    "author": "Floyd Warner",
+    "description": "I was really into cars when..."
   }
 ]`            }/>
             </Fill>
@@ -176,7 +170,7 @@ function Presentation() {
             </Fill>
             <Fill style={{textAlign: 'left'}}>
               <Code style={{color: 'white', fontSize: 25}}>
-                GET /api/events/7/sessions
+                GET /api/podcasts/7/episodes
               </Code>
               <br />
               <CodePane
@@ -184,17 +178,21 @@ function Presentation() {
                 lang='json'
                 source={`[
   {
-    "id": 41,
-    "startAt": "11.30",
-    "title": "Архітектура Front End проектів"
-    "speakerId": 4,
+    "id": 1,
+    "image": "http://example.com/episode-1.jpg",
+    "title": "Sungrazing Comets"
+    "date": "Oct 08, 2017",
+    "duration": "24 min",
+    "description": "The upcoming solar eclipse..."
   },
   ...
   {
-    "id": 44,
-    "startAt": "15.30",
-    "title": "GraphQL"
-    "speakerId": 7
+    "id": 3,
+    "image": "http://example.com/episode-3.jpg",
+    "title": "Space Launch System"
+    "date": "Oct 08, 2017",
+    "duration": "34 min",
+    "description": "I was really into cars when..."
   }
 ]`            }/>
             </Fill>
@@ -206,9 +204,6 @@ function Presentation() {
               <Image src="/images/rest/screen3.png" width={500}/>
             </Fill>
             <Fill style={{textAlign: 'left'}}>
-              <Code style={{color: '#555', fontSize: 25}}>
-                GET /api/speakers/4
-              </Code>
               <br />
               <Code style={{color: '#555', fontSize: 25}}>
                 GET /api/speakers/5
@@ -228,19 +223,37 @@ function Presentation() {
                 source={`[
   {
     "id": 7,
-    "name": "Богдан Лизанець"
+    "name": "Floyd Warner"
   }
 ]`            }/>
             </Fill>
           </Layout>
         </Slide>
-        <Slide bgImage="/images/graph-wash.png" transition={['fade']}>
-          <Image src="/images/rest/screen4.png" width={800}/>
-        </Slide>
         {/*GQL example*/}
         <Slide bgImage="/images/graph-wash.png" transition={['fade']}>
+          <Link
+            href={FEED_GRAPHQL_URL}
+            target={'_blank'}
+            textColor="secondary">
+            {FEED_GRAPHQL_URL}
+          </Link>
           <iframe
-            src={`${GRAPH_COOL_URL}&hideVariables=true`}
+            src={FEED_GRAPHQL_URL + '?query=' + encodeURIComponent(`{
+  podcast(url: "https://viavhs.podiant.co/rss/") {
+    title
+    author
+    # image
+    # description
+    episodes {
+      # id
+      # slug
+      # image
+      title
+      # description
+    }
+  }
+}
+            `)}
             style={{width: '900px', height: '60vh', boxShadow: '0px 0px 50px -2px rgba(0,0,0,0.3)'}}
           />
         </Slide>
@@ -254,63 +267,61 @@ function Presentation() {
             We can handle it without <span style={{color: '#E10098'}}>GraphQL</span>!
           </Heading>
           <List>
-            <ListItem>
-              <Appear>
-                <Text textFont="Roboto Mono" textColor={'secondary'} textSize={23}>
-                  GET /api/event-with-all-data-i-need-for-this-screen/7
-                </Text>
-              </Appear>
-            </ListItem>
-            <ListItem>
-              <Appear>
-                <Text textFont="Roboto Mono" textColor={'secondary'} textSize={23}>
-                  GET /api/event-with-all-data-i-possibly-ever-need/7
-                </Text>
-              </Appear>
-            </ListItem>
-            <ListItem>
-              <Appear>
-                <Text textFont="Roboto Mono" textColor={'secondary'} textSize={23}>
-                  GET /api/events/7?field=name&field=sessions[*].title&...
-                </Text>
-              </Appear>
-            </ListItem>
-            <ListItem>
-              <Appear>
-                <Text textFont="Roboto Mono" textColor={'secondary'} textSize={23}>
-                  GET /api/events/7?expand=sessions[*].speaker.name&...
-                </Text>
-              </Appear>
-            </ListItem>
-            <ListItem>
-              <Appear>
-                <Text textFont="Roboto Mono" textColor={'secondary'} textSize={23}>
-                  GET /odata/events?
-                  <br />
-                  $filter=id+eq+7&$select=name...&expand=sessions...
-                </Text>
-              </Appear>
-            </ListItem>
-            <ListItem>
-              <Appear>
-                <Text textFont="Roboto Mono" textColor={'secondary'} textSize={23}>
+            <Appear>
+              <ListItem>
+                <span style={{fontFamily: 'Roboto Mono', fontSize: 23}}>
+                  GET /api/podcast-with-all-data-i-need-for-this-screen/7
+                </span>
+              </ListItem>
+            </Appear>
+            <Appear>
+              <ListItem>
+                <span style={{fontFamily: 'Roboto Mono', fontSize: 23}}>
+                  GET /api/podcast-with-all-data-i-possibly-ever-need/7
+                </span>
+              </ListItem>
+            </Appear>
+            <Appear>
+              <ListItem>
+                <span style={{fontFamily: 'Roboto Mono', fontSize: 23}}>
+                  GET /api/podcasts/7?field=name&field=episodes[*].title&...
+                </span>
+              </ListItem>
+            </Appear>
+            <Appear>
+              <ListItem>
+                <span style={{fontFamily: 'Roboto Mono', fontSize: 23}}>
+                  GET /api/podcasts/7?expand=episodes[*].speaker.name&...
+                </span>
+              </ListItem>
+            </Appear>
+            <Appear>
+              <ListItem>
+                <span style={{fontFamily: 'Roboto Mono', fontSize: 23}}>
+                  GET /odata/podcasts?$filter=id+eq+7&$select=name...&expand=...
+                </span>
+              </ListItem>
+            </Appear>
+            <Appear>
+              <ListItem>
+                <span style={{fontFamily: 'Roboto Mono', fontSize: 23}}>
                   GET /api/your-variant-here/
-                </Text>
-              </Appear>
-            </ListItem>
+                </span>
+              </ListItem>
+            </Appear>
           </List>
         </Slide>
         {/*Queries and GraphiQL*/}
         <Slide bgImage="/images/graph-wash.png">
           <Heading>
-            <Link href={GRAPH_COOL_URL} target={'_blank'}  textColor="secondary">
+            <Link href={FEED_GRAPHQL_URL} target={'_blank'}  textColor="secondary">
               Queries with <span style={{color: '#E10098'}}>Graph<em>i</em>QL</span>
             </Link>
           </Heading>
         </Slide>
         {/*resolvers*/}
         <Slide bgImage="/images/graph-wash.png">
-          <Link href={GRAPH_COOL_URL} target={'_blank'} textColor="secondary">
+          <Link href="http://graphql.org/learn/execution/#root-fields-resolvers" target={'_blank'} textColor="secondary">
             http://<span style={{color: '#E10098'}}>graphql</span>.org/learn/execution/<span style={{color: '#aaa'}}>#root-fields-resolvers</span>
           </Link>
           <br />
@@ -320,15 +331,15 @@ function Presentation() {
               <CodePane
                 className='prism'
                 lang='js'
-                source={`Session: {
-  // id: (session) => session.id,
-  // title: (session) => session.title,
-  // startAt: (session) => session.startAt,
-  // description: (session) => session.description,
-  speaker: (session, args, context) => {
+                source={`Episode: {
+  // id: (session) => episode.id,
+  // title: (episode) => episode.title,
+  // image: (episode) => episode.image,
+  // description: (episode) => episode.description,
+  speaker: (episode, args, context, info) => {
     // could be async request with promise
     return context
-      .db.loadSpeakerByID(session.speakerId);
+      .db.loadSpeakerByID(episode.speakerId);
   }
 }`
                 }
@@ -339,16 +350,16 @@ function Presentation() {
               <CodePane
                 className='prism'
                 lang='js'
-                source={`const SessionType = new GraphQLObjectType({
+                source={`const EpisodeType = new GraphQLObjectType({
   /* ... */
   fields: () => ({
     /* ... */
     speaker: {
       type: SpeakerType,
       args: {/* ... */}
-      resolve: (session, args, context) => {
+      resolve: (episode, args, context, info) => {
         return context
-          .db.loadSpeakerByID(session.speakerId);
+          .db.loadSpeakerByID(episode.speakerId);
       }
     },
   }),
@@ -382,7 +393,7 @@ function Presentation() {
         </Slide>
         {/*fragments*/}
         <Slide bgImage="/images/graph-wash.png">
-          <Link href={GRAPH_COOL_URL} target={'_blank'} textColor="secondary">
+          <Link href="http://graphql.org/learn/queries/#fragments" target={'_blank'} textColor="secondary">
             http://<span style={{color: '#E10098'}}>graphql</span>.org/learn/queries/<span style={{color: '#aaa'}}>#fragments</span>
           </Link>
           <br />
@@ -393,14 +404,14 @@ function Presentation() {
                 className='prism'
                 lang='graphql'
                 source={`{
-  Event(name: "BETLAB JS MEETUP") {
-    ...eventFragment
+  podcast(url: "http://example.com/podcast/rss") {
+    ...podcastFragment
   }
 }
 
-fragment eventFragment on Event {
-  name
-  date
+fragment podcastFragment on Podcast {
+  title
+  author
 }`
                 }
               />
@@ -410,9 +421,9 @@ fragment eventFragment on Event {
                 className='prism'
                 lang='graphql'
                 source={`{
-  "meetupJSEvent": {
-    "name": "BETLAB JS MEETUP",
-    "date": "2016-12-10T09:30:00.000Z"
+  "podcast": {
+    "title": "Space Explorer Podcast",
+    "author": "Floyd Warner"
   }
 }`
                 }
@@ -422,11 +433,11 @@ fragment eventFragment on Event {
         </Slide>
         {/*directives*/}
         <Slide bgImage="/images/graph-wash.png">
-          <Link href={GRAPH_COOL_URL} target={'_blank'} textColor="secondary">
+          <Link href="http://graphql.org/learn/queries/#variable-definitions" target={'_blank'} textColor="secondary">
             http://<span style={{color: '#E10098'}}>graphql</span>.org/learn/queries/<span style={{color: '#aaa'}}>#variable-definitions</span>
           </Link>
           <br />
-          <Link href={GRAPH_COOL_URL} target={'_blank'} textColor="secondary">
+          <Link href="http://graphql.org/learn/queries/#directives" target={'_blank'} textColor="secondary">
             http://<span style={{color: '#E10098'}}>graphql</span>.org/learn/queries/<span style={{color: '#aaa'}}>#directives</span>
           </Link>
           <br />
@@ -436,10 +447,22 @@ fragment eventFragment on Event {
               <CodePane
                 className='prism'
                 lang='graphql'
-                source={`query jsMeetupQuery($id: ID, $withAllSessions: Boolean) {
-  Event(id: $id) {
-    name
-    sessions @include(if: $withAllSessions)
+                source={`{
+  "url": "http://example.com/podcast/rss",
+  "id": "42",
+  "withPodcast": true,
+}`
+                }
+              />
+              <CodePane
+                className='prism'
+                lang='graphql'
+                source={`query Episode($url: String!, $id: String!, $withPodcast: Boolean) {
+  episode(url: $url, id: $id) {
+    title
+    podcast @include(if: $withPodcast) {
+      title
+    }
   }
 }`               }
               />
@@ -449,8 +472,72 @@ fragment eventFragment on Event {
                 className='prism'
                 lang='graphql'
                 source={`{
-  "Event": {
-    "name": "BETLAB JS MEETUP"
+  "episode": {
+    "title": "Sungrazing Comets",
+    "podcast": {
+      "title": "Space Explorer Podcast"
+    }
+  }
+}`
+                }
+              />
+            </Fill>
+          </Layout>
+        </Slide>
+        {/*directives + inline fragment*/}
+        <Slide bgImage="/images/graph-wash.png">
+          <Link href="http://graphql.org/learn/queries/#variable-definitions" target={'_blank'} textColor="secondary">
+            http://<span style={{color: '#E10098'}}>graphql</span>.org/learn/queries/<span style={{color: '#aaa'}}>#variable-definitions</span>
+          </Link>
+          <br />
+          <Link href="http://graphql.org/learn/queries/#directives" target={'_blank'} textColor="secondary">
+            http://<span style={{color: '#E10098'}}>graphql</span>.org/learn/queries/<span style={{color: '#aaa'}}>#directives</span>
+          </Link>
+          <br />
+          <Link href="https://graphql.org/learn/queries/#inline-fragments" target={'_blank'} textColor="secondary">
+            http://<span style={{color: '#E10098'}}>graphql</span>.org/learn/queries/<span style={{color: '#aaa'}}>#inline-fragments</span>
+          </Link>
+          <br />
+          <br />
+          <Layout>
+            <Fill>
+              <CodePane
+                className='prism'
+                lang='graphql'
+                source={`{
+  "url": "http://example.com/podcast/rss",
+  "id": "42",
+  "withExpandedInfo": false,
+}`
+                }
+              />
+              <CodePane
+                className='prism'
+                lang='graphql'
+                source={`query Episode($url: String!, $id: String!, $withExpandedInfo: Boolean) {
+  episode(url: $url, id: $id) {
+    title
+    ... @include(if: $expandedInfo) {
+      podcast {
+        title
+      }
+      enclosure {
+        url
+        type
+      }
+      tags
+    }
+  }
+}`               }
+              />
+            </Fill>
+            <Fill>
+              <CodePane
+                className='prism'
+                lang='graphql'
+                source={`{
+  "episode": {
+    "title": "Sungrazing Comets",
   }
 }`
                 }
@@ -464,8 +551,9 @@ fragment eventFragment on Event {
         </Slide>
         {/*aliases*/}
         <Slide bgImage="/images/graph-wash.png">
-          <Link href={GRAPH_COOL_URL} target={'_blank'} textColor="secondary">
+          <Link href="http://graphql.org/learn/queries/#aliases" target={'_blank'} textColor="secondary">
             http://<span style={{color: '#E10098'}}>graphql</span>.org/learn/queries/<span style={{color: '#aaa'}}>#aliases</span>
+          </Link>
             <br />
             <br />
             <Layout>
@@ -473,11 +561,10 @@ fragment eventFragment on Event {
                 <CodePane
                   className='prism'
                   lang='graphql'
-                  source={`{
-  meetupJSEvent: Event(name: "BETLAB JS MEETUP") {
-    name
-    date
-  }
+                  source={`podcast(url: "http://example.com/podcast/rss") {
+  title
+  image: smallImage
+  # image(size: Small)
 }`
                   }
                 />
@@ -487,17 +574,15 @@ fragment eventFragment on Event {
                   className='prism'
                   lang='graphql'
                   source={`{
-  "meetupJSEvent": {
-    "name": "BETLAB JS MEETUP",
-    "date": "2016-12-10T09:30:00.000Z"
+  "podcast": {
+    "title": "Space Explorer Podcast",
+    "image": "http://example.com/podcast/image-sm.jpg",
   }
 }`
                   }
                 />
               </Fill>
             </Layout>
-          </Link>
-
         </Slide>
         {/*Mutations*/}
         <Slide bgImage="/images/graph-wash.png">
@@ -507,7 +592,7 @@ fragment eventFragment on Event {
           <br />
           <Appear>
             <div>
-              <Link href={GRAPH_COOL_URL} target={'_blank'} textColor="secondary">
+              <Link href="http://graphql.org/learn/queries/#mutations" target={'_blank'} textColor="secondary">
                 http://<span style={{color: '#E10098'}}>graphql</span>.org/learn/queries/<span style={{color: '#aaa'}}>#mutations</span>
               </Link>
               <br />
@@ -515,9 +600,9 @@ fragment eventFragment on Event {
               <CodePane
                 className='prism'
                 lang='graphql'
-                source={`mutation UpdateDescriptionForEvent($eventId: ID!, $description: String!) {
-  updateEvent(id: $eventId, description: $description) {
-    name
+                source={`mutation UpdateDescriptionForPodcast($podcastId: ID!, $description: String!) {
+  updatePodcast(id: $podcastId, description: $description) {
+    id
     description
   }
 }`               }
@@ -542,19 +627,19 @@ fragment eventFragment on Event {
           <CodePane
             className='prism'
             lang='graphql'
-            source={`subscription meetupJSSubscription {
-  updateEvent(id: "ciwfk26dn25on0152p0co0ucw") {
-    ...eventFragment
+            source={`subscription podcastCommentsSubscription {
+  commentAdded(id: 7) {
+    ...commentFragment
   }
 }`          }
           />
           <br />
           <Appear>
           <Link
-            href='https://dev-blog.apollodata.com/graphql-subscriptions-in-apollo-client-9a2457f015fb'
+            href='https://github.com/facebook/graphql/blob/master/rfcs/Subscriptions.md'
             target={'_blank'}
             textColor="secondary">
-            https://dev-blog.apollodata.com/<span style={{color: '#E10098'}}>graphql</span>-subscriptions-in-apollo-client-9a2457f015fb
+            https://github.com/facebook/<span style={{color: '#E10098'}}>graphql</span>/blob/master/rfcs/Subscriptions.md
           </Link>
           </Appear>
         </Slide>
@@ -564,6 +649,26 @@ fragment eventFragment on Event {
         <Slide bgImage="/images/graph-wash.png">
           <Heading>Batch operations</Heading>
           <Image src="/images/graphql/batch.png" width={900}/>
+          <Appear>
+            <div>
+            <Link
+              href='https://blog.apollographql.com/query-batching-in-apollo-63acfd859862'
+              target={'_blank'}
+              textColor="secondary">
+              https://blog.apollo<span style={{color: '#E10098'}}>graphql</span>.com/query-batching-in-apollo-63acfd859862
+            </Link>
+            <br />
+            <Link
+              href='https://www.apollographql.com/docs/link/links/batch-http.html'
+              target={'_blank'}
+              textColor="secondary">
+              https://www.apollo<span style={{color: '#E10098'}}>graphql</span>.com/docs/link/links/batch-http.html
+            </Link>
+            </div>
+          </Appear>
+        </Slide>
+        <Slide bgImage="/images/graph-wash.png">
+          <Image src="/images/graphql/batching-network.png" height={500}/>
         </Slide>
         <Slide bgImage="/images/graph-wash.png">
           <Heading>Defer</Heading>
@@ -582,6 +687,14 @@ fragment eventFragment on Event {
           <Heading textColor='tertiary' textSize={50}>
             Schemas and Types
           </Heading>
+          <Appear>
+            <Link
+              href='https://graphql.org/learn/schema/'
+              target={'_blank'}
+              textColor="secondary">
+              http://<span style={{color: '#E10098'}}>graphql</span>.org/learn/schema/
+            </Link>
+          </Appear>
           <br />
           <Layout>
             <Fill>
@@ -596,23 +709,23 @@ fragment eventFragment on Event {
 
 interface Entity {
   id: ID!
-  name: String
+  title: String
 }
 
-type Speaker implements Entity {
+type Episode implements Entity {
   id: ID!
-  name: String
-  age: Int
+  title: String
+  views: Int
   rating: Float
   isActive: Boolean
-  sessions: [Session]!
-  favoriteColor: RGB
+  color: RGB
+  podcast: Podcast
 }
 
 type Root {
-   speaker(id: ID!): Speaker
-   speakers(limit: Int = 10): [Speaker]!
-   sessions(bySpeaker: ID!, limit: Int = 5): [Session]!
+   podcast(url: String!): Podcast
+   episode(url: String!, id: ID!): Episode
+   episodes(url: String!, limit: Int = 10): [Episode]!
 }
 
 schema {
@@ -623,7 +736,6 @@ schema {
                 }
               />
             </Fill>
-            <Fill/>
             <Fill>
               <CodePane
                 className='prism'
@@ -652,11 +764,11 @@ Input Object Type  => input
 
 Type Markers
 ============
-Non-null Type                    => <type>!     e.g String!
-List Type                        => [<type>]    e.g [String]
-List of Non-null Types           => [<type>!]   e.g [String!]
-Non-null List Type               => [<type>]!   e.g [String]!
-Non-null List of Non-null Types  => [<type>!]!  e.g [String!]!
+Non-null Type             => <type>!    e.g String!
+List Type                 => [<type>]   e.g [String]
+List of Non-null Types    => [<type>!]  e.g [String!]
+Non-null List Type        => [<type>]!  e.g [String]!
+Non-null List of Non-null => [<type>!]! e.g [String!]!
 `}
               />
             </Fill>
@@ -711,43 +823,24 @@ Non-null List of Non-null Types  => [<type>!]!  e.g [String!]!
 [Awesome list of GraphQL & Relay](https://github.com/chentsulin/awesome-graphql)
 [The GitHub GraphQL API](http://githubengineering.com/the-github-graphql-api)
 [GraphQL backend-as-a-service](https://www.graph.cool)
+[GraphQL server with any database](https://www.prisma.io/)
           `}/>
         </Slide>
         {/*Author*/}
         <Slide bgImage="/images/graph-wash.png" transition={["spin"]}>
-          <Layout>
-            <Fill>
-              Author:
-              <br />
-              <Link href='mailto:bogdan.uz@gmail.com'
-                    target='_blank'
-                    textColor='tertiary'
-                    bold>
-                Bohdan Lyzanets
-              </Link>
-            </Fill>
-            <Fill>
-              <Link
-                href='https://www.facebook.com/events/1055389181250886/permalink/1055391421250662/'
+          Author:
+          <br />
+          <Link href='mailto:bogdan.uz@gmail.com'
                 target='_blank'
                 textColor='tertiary'
                 bold>
-                <Image
-                  src="/images/betlab-logo_wh_cut.png"
-                  height={20}
-                  style={{margin:0}}
-                />
-                <br />
-                <span style={{fontSize: 21}}>
-                  JS Meetup
-                </span>
-              </Link>
-            </Fill>
-          </Layout>
+            Bohdan Lyzanets
+          </Link>
+          <br />
           <br />
           <Appear>
-            <Link href='https://graphql-presentation.now.sh' textColor="white">
-              https://<span style={{color: '#E10098'}}>graphql</span>-presentation.now.sh
+            <Link href='https://bodia-uz.github.io/graphql-presentation' textColor="white">
+              https://bodia-uz.github.io/<span style={{color: '#E10098'}}>graphql</span>-presentation
             </Link>
           </Appear>
         </Slide>
