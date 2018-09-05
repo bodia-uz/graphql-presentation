@@ -824,6 +824,7 @@ Non-null List of Non-null => [<type>!]! e.g [String!]!
 [The GitHub GraphQL API](http://githubengineering.com/the-github-graphql-api)
 [GraphQL backend-as-a-service](https://www.graph.cool)
 [GraphQL server with any database](https://www.prisma.io/)
+[https://blog.runscope.com/posts/you-might-not-need-graphql)
           `}/>
         </Slide>
         {/*Author*/}
@@ -839,8 +840,8 @@ Non-null List of Non-null => [<type>!]! e.g [String!]!
           <br />
           <br />
           <Appear>
-            <Link href='https://bodia-uz.github.io/graphql-presentation' textColor="white">
-              https://bodia-uz.github.io/<span style={{color: '#E10098'}}>graphql</span>-presentation
+            <Link href='https://bodia-uz.github.io/graphql-presentation/v2' textColor="white">
+              https://bodia-uz.github.io/<span style={{color: '#E10098'}}>graphql</span>-presentation/v2
             </Link>
           </Appear>
         </Slide>
